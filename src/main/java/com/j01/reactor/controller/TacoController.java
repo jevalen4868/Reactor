@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @Data
 public class TacoController {
-    private TacoRepo tr;
+    private final TacoRepo tr;
     @GetMapping(params = "recent")
     public Flux<Taco> recentTacos() {
         return this.tr.findAll().take(12);

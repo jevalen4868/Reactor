@@ -1,6 +1,7 @@
 package com.j01.reactor;
 
 import com.j01.reactor.config.RouterFunctionConfig;
+import com.j01.reactor.controller.TacoController;
 import com.j01.reactor.model.Ingredient;
 import com.j01.reactor.model.Taco;
 import com.j01.reactor.repo.TacoRepo;
@@ -8,10 +9,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +40,15 @@ public class TacoControllerTest {
 
     @Test
     public void shouldReturnRecentTacos() {
-        WebTestClient wtc = WebTestClient.bindToController(new RouterFunctionConfig(this.tr)).build();
+        WebTestClient wtc = WebTestClient.bindToController(new TacoController(this.tr)).build();
+
+        wtc.get().uri("/api/tacos?recent")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Taco.class)
+                .contains(Arrays.copyOf(tacos, 12));
+
         wtc.get().uri("/api/tacos?recent")
                 .exchange()
                 .expectStatus().isOk()

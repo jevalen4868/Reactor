@@ -19,9 +19,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
-@AllArgsConstructor
+@Data
 public class RouterFunctionConfig {
-    private TacoRepo tr;
+    private final TacoRepo tr;
     @Bean
     public RouterFunction<?> routerFunction() {
         return route(GET("/api/tacos").and(queryParam("recent", Objects::nonNull)), this::recents)
