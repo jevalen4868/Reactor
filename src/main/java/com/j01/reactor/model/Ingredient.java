@@ -1,6 +1,8 @@
 package com.j01.reactor.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
@@ -8,7 +10,8 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ingredient {
     @Id
     private String id;
