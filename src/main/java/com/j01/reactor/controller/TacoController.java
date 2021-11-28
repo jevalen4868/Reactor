@@ -23,6 +23,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Data
 public class TacoController {
     private final TacoRepo tr;
+    /*
     @GetMapping(params = "recent")
     public Flux<Taco> recentTacos() {
         return this.tr.findAll().take(12);
@@ -37,13 +38,7 @@ public class TacoController {
         //return this.tr.saveAll(tacoMono).next() ;
         return tacoMono.flatMap(this.tr::save);
     }
-
-    @Bean
-    public RouterFunction<?> routerFunction() {
-        return route(GET("/api/tacos").and(queryParam("recent", Objects::nonNull)), this::recents)
-                .andRoute(POST("/api/tacos"), this::postTaco);
-    }
-
+*/
     public Mono<ServerResponse> recents(ServerRequest serverRequest) {
         return ServerResponse.ok().body(tr.findAll().take(12), Taco.class);
     }
