@@ -15,11 +15,12 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 @Data
 public class RouterFunctionConfig {
-    private TacoController tc;
-    private TacoOrderController toc;
+    private final TacoController tc;
+    private final TacoOrderController toc;
+
     @Bean
     public RouterFunction<?> routerFunction() {
-        return route(GET("/api/tacos").and(queryParam("recent", Objects::nonNull)), tc::recents)
+        return route(GET("/api/tacos").and(queryParam("recent", t -> t != null)), tc::recents)
                 .andRoute(POST("/api/tacos"), tc::postTaco);
     }
 }

@@ -1,4 +1,4 @@
-create table Ingredient
+/*create table Ingredient
 (
     id identity,
     slug varchar(4)  not null,
@@ -25,4 +25,4 @@ create table Taco_Order
     cc_expiration   varchar(5)  not null,
     cc_cvv          varchar(3)  not null,
     taco_ids        array
-);
+);*/

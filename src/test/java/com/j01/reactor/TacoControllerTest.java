@@ -91,12 +91,24 @@ public class TacoControllerTest {
 
     private Taco testTaco(Long number) {
         Taco taco = new Taco();
-        taco.setId(number != null ? number.toString() : "TESTID");
+        taco.setId(number);
         taco.setName("Taco " + number);
         List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(new Ingredient("INGA", "Ingredient A", Ingredient.Type.WRAP));
-        ingredients.add(new Ingredient("INGB", "Ingredient B", Ingredient.Type.PROTEIN));
-        taco.setIngredients(ingredients);
+        Ingredient i1 = new Ingredient();
+        i1.setId(0L);
+        i1.setSlug("INGA");
+        i1.setName("Ingredient A");
+        i1.setType(Ingredient.Type.WRAP);
+        ingredients.add(i1);
+        Ingredient i2 = new Ingredient();
+        i2.setId(1L);
+        i2.setSlug("INGB");
+        i2.setName("Ingredient B");
+        i2.setType(Ingredient.Type.PROTEIN);
+        ingredients.add(i1);
+        ingredients.add(i2);
+        ingredients.forEach(taco::addIng);
+
         return taco;
     }
 }

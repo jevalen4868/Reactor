@@ -48,8 +48,13 @@ public class ReactorApplication {
                             // handle timeout error
                         });
 
-        Mono<Ingredient> ingredientMono = Mono.just(
-                new Ingredient("INGC", "Ingredient C", Ingredient.Type.VEGGIES));
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(0L);
+        ingredient.setSlug("INGB");
+        ingredient.setName("Ingredient B");
+        ingredient.setType(Ingredient.Type.PROTEIN);
+
+        Mono<Ingredient> ingredientMono = Mono.just(ingredient);
 
         Mono<Ingredient> result = WebClient.create()
                 .post()
@@ -59,8 +64,6 @@ public class ReactorApplication {
                 .bodyToMono(Ingredient.class);
 
         result.subscribe(System.out::println);
-
-        Ingredient ingredient = new Ingredient(0, "INGC", "Ingredient C", Ingredient.Type.VEGGIES);
 
         Mono<Ingredient> result1 = WebClient.create()
                 .post()
@@ -140,11 +143,9 @@ public class ReactorApplication {
         return WebClient.create("http://localhost:8080");
     }
 
-    @Autowired
-    WebClient webClient;
 
     public Mono<Ingredient> getIngredientById(String ingredientId) {
-        Mono<Ingredient> ingredient = webClient
+        Mono<Ingredient> ingredient = WebClient.create("http://localhost:8080")
                 .get()
                 .uri("/ingredients/{id}", ingredientId)
                 .retrieve()
