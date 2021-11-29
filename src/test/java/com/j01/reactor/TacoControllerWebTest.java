@@ -6,7 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -18,9 +20,12 @@ public class TacoControllerWebTest {
     private WebTestClient testClient;
 
     @Test
+    @WithMockUser(roles = "USER")
     public void shouldReturnRecentTacos() throws IOException {
         testClient.get().uri("/api/tacos?recent")
-                .accept(MediaType.APPLICATION_JSON).exchange()
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .exchange()
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$").isArray()

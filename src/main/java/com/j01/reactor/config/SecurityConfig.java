@@ -20,7 +20,7 @@ public class SecurityConfig {
             ServerHttpSecurity http) {
         return http
                 .authorizeExchange()
-                .pathMatchers("/api/tacos", "/orders").hasAuthority("USER")
+                .pathMatchers("/api/tacos", "/orders").hasAuthority("ROLE_USER")
                 .anyExchange().permitAll()
                 .and()
                 .build();

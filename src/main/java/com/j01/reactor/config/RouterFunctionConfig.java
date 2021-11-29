@@ -5,6 +5,7 @@ import com.j01.reactor.controller.TacoOrderController;
 import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
 import java.util.Objects;
@@ -20,7 +21,12 @@ public class RouterFunctionConfig {
 
     @Bean
     public RouterFunction<?> routerFunction() {
-        return route(GET("/api/tacos").and(queryParam("recent", t -> t != null)), tc::recents)
-                .andRoute(POST("/api/tacos"), tc::postTaco);
+        // get
+        return route(GET("/api/tacos")
+                .and(contentType(MediaType.APPLICATION_JSON))
+                .and(queryParam("recent", Objects::nonNull))
+                .and(accept(MediaType.APPLICATION_JSON)), tc::recents)
+                // post
+                .andRoute(POST("/api/tacos").and(contentType(MediaType.APPLICATION_JSON)), tc::postTaco);
     }
 }
