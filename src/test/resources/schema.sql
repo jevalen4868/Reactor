@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS Ingredient;
+DROP TABLE IF EXISTS Taco;
+DROP TABLE IF EXISTS Taco_Order;
+
 create table Ingredient
 (
     id identity,
