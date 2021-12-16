@@ -2,16 +2,18 @@ package com.j01.reactor.controller;
 
 import com.j01.reactor.model.Taco;
 import com.j01.reactor.repo.TacoRepo;
-import lombok.Data;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-@RestController
-@Data
+@Component
+@RequiredArgsConstructor
+@Slf4j
 public class TacoController {
     private final TacoRepo tr;
     /*
@@ -31,10 +33,12 @@ public class TacoController {
     }
 */
     public Mono<ServerResponse> recents(ServerRequest serverRequest) {
+        log.info("HELLO_00");
         return ServerResponse.ok().body(tr.findAll().take(12), Taco.class);
     }
 
     public Mono<ServerResponse> postTaco(ServerRequest req) {
+        log.info("HELLO_01");
         return req.bodyToMono(Taco.class)
                 .flatMap(tr::save)
                 .flatMap((Taco savedTaco) -> {

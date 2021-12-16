@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'org.springframework.boot' version '2.6.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -24,6 +26,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.projectlombok:lombok'
+    // Keep this version in sync with the spring boot version.
+    // Mac os specific items
+    if(OperatingSystem.current().isMacOsX()) {
+        implementation group: 'io.netty', name: 'netty-resolver-dns-native-macos', classifier: 'osx-aarch_64'
+    }
     runtimeOnly 'io.r2dbc:r2dbc-h2'
     runtimeOnly 'com.h2database:h2'
     implementation 'javax.validation:validation-api:2.0.1.Final'

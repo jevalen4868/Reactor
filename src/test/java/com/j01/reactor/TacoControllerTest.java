@@ -7,8 +7,15 @@ import com.j01.reactor.repo.TacoRepo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,11 +27,20 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TacoControllerTest {
+
+    @Autowired
+    WebTestClient wtc;
+
+    @MockBean
+    TacoRepo tr;
+
     @Test
+    @WithMockUser(roles = "USER")
     public void shouldReturnRecentTacos() {
-        TacoRepo tr;
         Taco[] tacos;
         tacos = new Taco[]{
                 testTaco(1L), testTaco(2L),
@@ -36,19 +52,17 @@ public class TacoControllerTest {
                 testTaco(13L), testTaco(14L),
                 testTaco(15L), testTaco(16L)};
         Flux<Taco> tacoFlux = Flux.just(tacos);
-        tr = Mockito.mock(TacoRepo.class);
         when(tr.findAll()).thenReturn(tacoFlux);
 
-        WebTestClient wtc = WebTestClient.bindToController(new TacoController(tr)).build();
-
         wtc.get().uri("/api/tacos?recent")
-                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(Taco.class)
                 .contains(Arrays.copyOf(tacos, 12));
 
         wtc.get().uri("/api/tacos?recent")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -65,12 +79,10 @@ public class TacoControllerTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    @WithMockUser(roles = "USER")
     public void shouldSaveATaco() {
         TacoRepo tacoRepo = Mockito.mock(
                 TacoRepo.class);
-
-        WebTestClient testClient = WebTestClient.bindToController(
-                new TacoController(tacoRepo)).build();
 
         Mono<Taco> unsavedTacoMono = Mono.just(testTaco(1L));
         Taco savedTaco = testTaco(1L);
@@ -78,10 +90,10 @@ public class TacoControllerTest {
 
         when(tacoRepo.saveAll(any(Mono.class))).thenReturn(savedTacoMono);
 
-
-        testClient.post()
+        wtc.post()
                 .uri("/api/tacos")
                 .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .body(unsavedTacoMono, Taco.class)
                 .exchange()
                 .expectStatus().isCreated()
